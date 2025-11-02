@@ -1,5 +1,3 @@
-# nirman/parser.py
-
 import re
 from typing import List, Tuple
 
@@ -47,7 +45,6 @@ def parse_markdown_tree(lines: List[str]) -> List[Tuple[int, str, bool]]:
             # We add 1 because the connector ('--') signifies the final step in depth.
             depth = (len(prefix) // 4) + 1
         
-        # Determine if it's a directory and clean the name.
         is_directory = name.endswith(('\\', '/'))
         clean_name = name.rstrip('\\/')
 
