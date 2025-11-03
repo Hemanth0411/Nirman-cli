@@ -33,24 +33,27 @@ def parse_markdown_tree(lines: List[str]) -> List[Tuple[int, str, bool]]:
             name = line.strip()
             prefix = ""
 
-        # --- THIS IS THE FIX ---
-        # Calculate depth based on the visual indentation of the prefix.
-        # Each level of depth corresponds to 4 characters of indentation.
+        # Calculate depth based on indentation width
         if not prefix:
             depth = 0
         else:
-            # The depth is the length of the prefix string divided by 4, plus one.
-            # Example: "│   " is length 4. (4 // 4) = 1.
-            # Example: "│       " is length 8. (8 // 4) = 2.
-            # We add 1 because the connector ('--') signifies the final step in depth.
             depth = (len(prefix) // 4) + 1
         
-        is_directory = name.endswith(('\\', '/'))
+        is_directory = name.endswith(('/', '\\'))
         clean_name = name.rstrip('\\/')
 
         if clean_name == '.' and depth == 0:
             is_directory = True
 
         tree.append((depth, clean_name, is_directory))
-        
+
+    # --- Post-process to infer directories based on structure ---
+    for i in range(len(tree) - 1):
+        current_depth, current_name, current_is_dir = tree[i]
+        next_depth, _, _ = tree[i + 1]
+
+        # If the next line is visually deeper, current must be a folder
+        if not current_is_dir and next_depth > current_depth:
+            tree[i] = (current_depth, current_name, True)
+    
     return tree
