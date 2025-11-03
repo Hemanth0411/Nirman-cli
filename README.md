@@ -59,7 +59,7 @@ usage: nirman [-h] [-o OUTPUT] [--dry-run] [-f] input_file
 Build a project structure from a Markdown tree file.
 
 positional arguments:
-  input_file            Path to the Markdown file containing the project structure.
+  input_file            Path to the Markdown file containing the project structure (extensions allowed: .md, .markdown) .
 
 options:
   -h, --help            show this help message and exit
