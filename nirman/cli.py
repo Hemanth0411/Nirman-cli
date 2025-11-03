@@ -40,6 +40,15 @@ def main():
     if not input_path.is_file():
         print(f"Error: Input file not found at '{input_path}'")
         sys.exit(1)
+    
+    valid_extensions = {'.md', '.markdown'}
+    if input_path.suffix.lower() not in valid_extensions:
+        print(
+            f"\nNote: The file '{input_path.name}' doesn't seem to be a Markdown file.\n"
+            "Nirman currently supports only Markdown files (.md or .markdown) for building structures.\n"
+            "Please provide a valid Markdown file and try again."
+        )
+        sys.exit(0)
 
     try:
         with open(input_path, 'r', encoding='utf-8') as f:
