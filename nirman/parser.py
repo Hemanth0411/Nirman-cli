@@ -40,7 +40,7 @@ def parse_markdown_tree(lines: List[str]) -> List[Tuple[int, str, bool]]:
             depth = (len(prefix) // 4) + 1
         
         is_directory = name.endswith(('/', '\\'))
-        clean_name = name.rstrip('\\/')
+        clean_name = name.strip('\\/')
 
         if clean_name == '.' and depth == 0:
             is_directory = True
