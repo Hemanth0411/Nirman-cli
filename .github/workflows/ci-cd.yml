@@ -1,5 +1,3 @@
-# .github/workflows/ci-cd.yml
-
 name: Test and Publish Nirman-cli
 
 on:
