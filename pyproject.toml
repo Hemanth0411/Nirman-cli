@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Nirman-cli"
-version = "0.1.8"
+version = "0.1.9"
 description = "A CLI tool to create project folder structures from a markdown file."
 authors = [{ name="Hemanth Reddy Annem", email="Hemanthreddyannem@gmail.com" }] 
 readme = "README.md"
