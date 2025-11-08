@@ -51,9 +51,9 @@ def parse_markdown_tree(lines: List[str]) -> List[Tuple[int, str, bool]]:
             prefix = line[:prefix_end_index]
         else:
             # This is the root item.
-            raw_name = line.strip()
+            raw_name = line.strip().split()[0]
             prefix = ""
-            is_directory = True
+            is_directory = False
 
         if not raw_name:
             continue
