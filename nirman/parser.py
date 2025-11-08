@@ -28,22 +28,36 @@ def parse_markdown_tree(lines: List[str]) -> List[Tuple[int, str, bool]]:
     """
     tree = []
     
-    for line in lines:
+    for i, line in enumerate(lines):
         line = line.rstrip()
         if not line.strip():
+            continue
+
+        # If a line has --- or ───, skip it with a warning.
+        if re.search(r'-{3,}|─{3,}', line):
+            print(f"Warning: Skipping malformed line {i + 1}: '{line.strip()}'")
+            continue
+        # Skip lines with mixed or irregular tree connectors like ──-, -─, --──, etc.
+        if re.search(r'(─-)|(-─)|(--─)|(─--)', line):
+            print(f"Warning: Skipping malformed connector on line {i + 1}: '{line.strip()}'")
             continue
 
         # Split the line to isolate the name from the tree symbols.
         parts = re.split(r'--|──', line)
         if len(parts) > 1:
-            name = parts[-1].strip()
+            raw_name = parts[-1].strip()
             # Find the position of the name to determine the prefix.
             prefix_end_index = line.rfind(parts[-2]) + len(parts[-2])
             prefix = line[:prefix_end_index]
         else:
             # This is the root item.
-            name = line.strip()
+            raw_name = line.strip()
             prefix = ""
+            is_directory = True
+
+        if not raw_name:
+            continue
+        clean_name = raw_name.split()[0]
 
         # Calculate depth based on indentation width
         if not prefix:
@@ -52,10 +66,10 @@ def parse_markdown_tree(lines: List[str]) -> List[Tuple[int, str, bool]]:
             depth = (len(prefix) // 4) + 1
 
         # 1. First, determine if it's a directory from the raw name.
-        is_directory = name.endswith(('/', '\\'))
+        is_directory = raw_name.endswith(('/', '\\'))
 
         # 2. Then, create the clean_name by stripping the slashes.
-        clean_name = name.strip('\\/')
+        clean_name = raw_name.strip('\\/')
 
         # 3. Now, sanitize the clean_name for invalid characters.
         clean_name = re.sub(INVALID_CHARS_REGEX, '_', clean_name)
@@ -64,9 +78,9 @@ def parse_markdown_tree(lines: List[str]) -> List[Tuple[int, str, bool]]:
         base_name = clean_name.split('.')[0]
         if base_name.lower() in RESERVED_NAMES:
             clean_name = "_" + clean_name
-        
-        is_directory = name.endswith(('/', '\\'))
-        clean_name = name.strip('\\/')
+
+        is_directory = raw_name.endswith(('/', '\\'))
+        clean_name = raw_name.strip('\\/')
 
         # Get the base name before any extension for the check.
         base_name = clean_name.split('.')[0]
