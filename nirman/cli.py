@@ -41,12 +41,17 @@ def main():
         print(f"Error: Input file not found at '{input_path}'")
         sys.exit(1)
     
-    valid_extensions = {'.md', '.markdown'}
-    if input_path.suffix.lower() not in valid_extensions:
+    valid_extensions = {'.md', '.markdown', '.yaml', '.yml'}
+    ext = input_path.suffix.lower()
+    if ext not in valid_extensions:
+        print(f"Error: Unsupported file type '{ext}'.")
+        print("Supported: .md, .markdown, .yml, .yaml")
+        sys.exit(1)
+
+    if ext in {'.yml', '.yaml'}:
         print(
-            f"\nNote: The file '{input_path.name}' doesn't seem to be a Markdown file.\n"
-            "Nirman currently supports only Markdown files (.md or .markdown) for building structures.\n"
-            "Please provide a valid Markdown file and try again."
+            f"YAML support is under development.\n"
+            f"The file '{input_path.name}' was detected as YAML, but parsing is not yet implemented."
         )
         sys.exit(0)
 
