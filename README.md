@@ -9,57 +9,114 @@
   </a>
 </p>
 
-A simple and powerful CLI tool to create project folder and file structures from a Markdown tree.
+A simple and powerful CLI tool to create project folder and file structures from **Markdown** and **YAML** tree definitions.
 
-Stop creating files and folders manually. Define your project's skeleton in a readable Markdown file and let `nirman` build it for you in seconds.
+Stop creating files and folders manually. Define your project’s skeleton in a readable Markdown or YAML file, and let `nirman` build it for you in seconds.
 
 ## Key Features
 
--   **Intuitive Input:** Uses a visual, tree-style Markdown format.
--   **Safe by Default:** Includes a `--dry-run` mode to preview changes.
--   **Flexible:** Supports overwriting files with the `--force` flag.
--   **Simple & Lightweight:** No external dependencies.
+* **Two Input Formats:**
+
+  * Markdown (`.md`, `.markdown`)
+  * YAML (`.yml`, `.yaml`)
+* **Readable Tree Syntax:** Write clean collapsible structures.
+* **Safe Execution:** Preview actions with `--dry-run`.
+* **Flexible:** Overwrite files using `--force`.
+* **Lightweight & Fast:** Uses simple tree-based parsing.
+* **Cross-platform:** Works on Linux, macOS, and Windows.
+
+---
 
 ## Installation
 
-You can install `Nirman-cli` directly from PyPI:
+Install from PyPI:
 
 ```bash
 pip install Nirman-cli
 ```
 
-## Usage
+---
 
-1.  Create a Markdown file (e.g., `structure.md`) defining your desired project layout:
+# Usage
 
-    ```markdown
-    my-python-app/
+## 1) Markdown Example
+
+Create a file `structure.md`:
+
+```markdown
+my-python-app/
+├── src/
+│   ├── __init__.py
+│   └── main.py
+├── tests/
+│   └── test_main.py
+└── README.md
+```
+
+Build the structure:
+
+```bash
+nirman structure.md
+```
+
+---
+
+## 2) YAML Example
+
+Nirman also supports YAML.
+**Rule:** Individual files must be listed under a `files:` key.
+
+Example (`structure.yml`):
+
+```yaml
+project:
+  src:
+    files:
+      - main.py
+      - utils.py
+  services:
+    api:
+      files:
+        - handler.py
+        - routes.py
+  files:
+    - README.md
+    - .gitignore
+```
+
+Build it:
+
+```bash
+nirman structure.yml
+```
+
+This produces:
+
+```
+output_folder/
+└── project/
     ├── src/
-    │   ├── __init__.py
-    │   └── main.py
-    ├── tests/
-    │   └── test_main.py
-    ├── .gitignore
-    └── README.md
-    ```
+    │   ├── main.py
+    │   └── utils.py
+    ├── services/
+    │   └── api/
+    │       ├── handler.py
+    │       └── routes.py
+    ├── README.md
+    └── .gitignore
+```
 
-2.  Run the `nirman` command from your terminal:
+---
 
-    ```bash
-    nirman structure.md
-    ```
-
-    This will create the `my-python-app/` directory and all its contents in your current location.
-
-### Command-Line Options
+# Command-Line Options
 
 ```
 usage: nirman [-h] [-o OUTPUT] [--dry-run] [-f] input_file
 
-Build a project structure from a Markdown tree file.
+Build a project structure from a Markdown (.md) or YAML (.yml/.yaml) file.
 
 positional arguments:
-  input_file            Path to the Markdown file containing the project structure (must have a .md or .markdown extension).
+  input_file            Path to the structure file.
 
 options:
   -h, --help            show this help message and exit
@@ -68,6 +125,36 @@ options:
   --dry-run             Print the actions that would be taken without creating any files or directories.
   -f, --force           Overwrite existing files if they are encountered.
 ```
+
+---
+
+# YAML Rules (Important)
+
+Your YAML structure must follow these rules:
+
+1. **Every folder is a dictionary key.**
+2. **All direct files inside a folder must be placed under:**
+
+   ```yaml
+   files:
+     - file1.txt
+     - file2.py
+   ```
+3. Nested folders must be dictionaries.
+4. Lists may contain:
+
+   * file names (strings)
+   * dictionaries for nested folders
+
+This rule is reflected in the updated parser:
+
+```python
+# Individual files must be under "files:"
+if key == "files":
+    ...
+```
+
+---
 
 ## License
 
