@@ -4,6 +4,7 @@ from pathlib import Path
 
 from .parser import parse_markdown_tree
 from .builder import build_structure
+from .yaml_parser import parse_yaml_tree
 
 def main():
     """The main entry point for the Nirman CLI."""
@@ -48,23 +49,23 @@ def main():
         print("Supported: .md, .markdown, .yml, .yaml")
         sys.exit(1)
 
-    if ext in {'.yml', '.yaml'}:
-        print(
-            f"YAML support is under development.\n"
-            f"The file '{input_path.name}' was detected as YAML, but parsing is not yet implemented."
-        )
-        sys.exit(0)
-
+    parsed_tree = None
     try:
-        with open(input_path, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
+        if ext in {'.md', '.markdown'}:
+            # read lines (existing flow)
+            with open(input_path, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+            parsed_tree = parse_markdown_tree(lines)
+
+        elif ext in {'.yml', '.yaml'}:
+            # read whole YAML and parse to tree
+            with open(input_path, 'r', encoding='utf-8') as f:
+                yaml_text = f.read()
+            parsed_tree = parse_yaml_tree(yaml_text)
     except Exception as e:
-        print(f"Error: Could not read the input file: {e}")
+        print(f"Error: Failed to parse input file '{input_path}': {e}")
         sys.exit(1)
-        
-    # --- 2. Parse the structure ---
-    print("Parsing structure...")
-    parsed_tree = parse_markdown_tree(lines)
+
     if not parsed_tree:
         print("Warning: Parsed tree is empty. No structure to build.")
         return
