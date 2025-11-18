@@ -1,7 +1,16 @@
 project:
   src:
-    - main.py
-    - utils:
-        - helper.py
-  tests:
-    - test_main.py
+    files:
+      - main.py
+      - utils.py
+  services:
+    api:
+      files:
+        - handler.py
+        - routes.py
+    files:
+      - config.yaml
+      - requirements.txt
+  files:
+    - README.md
+    - .gitignore
