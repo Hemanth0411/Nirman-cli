@@ -1,35 +1,25 @@
-# Nirman-cli
+# **Nirman-cli**
 
-<p align="center">
-  <a href="#">
-    <img src="https://img.shields.io/pypi/v/Nirman-cli?color=blue&label=pypi%20package" alt="PyPI Version">
-  </a>
-  <a href="https://github.com/Hemanth0411/Nirman-cli/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/Hemanth0411/Nirman-cli" alt="License">
-  </a>
-</p>
-
-A simple and powerful CLI tool to create project folder and file structures from **Markdown** and **YAML** tree definitions.
-
-Stop creating files and folders manually. Define your project’s skeleton in a readable Markdown or YAML file, and let `nirman` build it for you in seconds.
-
-## Key Features
-
-* **Two Input Formats:**
-
-  * Markdown (`.md`, `.markdown`)
-  * YAML (`.yml`, `.yaml`)
-* **Readable Tree Syntax:** Write clean collapsible structures.
-* **Safe Execution:** Preview actions with `--dry-run`.
-* **Flexible:** Overwrite files using `--force`.
-* **Lightweight & Fast:** Uses simple tree-based parsing.
-* **Cross-platform:** Works on Linux, macOS, and Windows.
+A clean, fast CLI tool to generate project folder structures from **Markdown** or **YAML** definitions.
+Stop clicking around in file explorers — describe your structure once, build it instantly.
 
 ---
 
-## Installation
+## **✨ Features**
 
-Install from PyPI:
+* **Two input formats**
+
+  * Markdown (`.md`, `.markdown`)
+  * YAML (`.yml`, `.yaml`)
+* **Tree-based, human-readable syntax**
+* **Dry-run mode** to preview without writing
+* **Force overwrite** for regenerating projects
+* **Cross-platform** (Linux, macOS, Windows)
+* Zero learning curve — simple, predictable behavior
+
+---
+
+## **📦 Installation**
 
 ```bash
 pip install Nirman-cli
@@ -37,13 +27,13 @@ pip install Nirman-cli
 
 ---
 
-# Usage
+## **🚀 Quick Start**
 
-## 1) Markdown Example
+### **1) Markdown**
 
-Create a file `structure.md`:
+**structure.md**
 
-```markdown
+```
 my-python-app/
 ├── src/
 │   ├── __init__.py
@@ -53,20 +43,23 @@ my-python-app/
 └── README.md
 ```
 
-Build the structure:
+Generate:
 
 ```bash
 nirman structure.md
 ```
 
+Creates the project inside the **current directory**.
+(Use `-o` to output elsewhere.)
+
 ---
 
-## 2) YAML Example
+### **2) YAML**
 
-Nirman also supports YAML.
-**Rule:** Individual files must be listed under a `files:` key.
+YAML uses a clean folder → files pattern.
+**Files MUST be under a `files:` key.**
 
-Example (`structure.yml`):
+**structure.yml**
 
 ```yaml
 project:
@@ -74,88 +67,121 @@ project:
     files:
       - main.py
       - utils.py
+
   services:
     api:
       files:
         - handler.py
         - routes.py
+
   files:
     - README.md
     - .gitignore
 ```
 
-Build it:
+Generate:
 
 ```bash
 nirman structure.yml
 ```
 
-This produces:
+---
+
+## **📂 Output Structure Example**
 
 ```
-output_folder/
-└── project/
-    ├── src/
-    │   ├── main.py
-    │   └── utils.py
-    ├── services/
-    │   └── api/
-    │       ├── handler.py
-    │       └── routes.py
-    ├── README.md
-    └── .gitignore
+project/
+├── src/
+│   ├── main.py
+│   └── utils.py
+├── services/
+│   └── api/
+│       ├── handler.py
+│       └── routes.py
+├── README.md
+└── .gitignore
 ```
 
 ---
 
-# Command-Line Options
+## **🛠 CLI Reference**
 
 ```
-usage: nirman [-h] [-o OUTPUT] [--dry-run] [-f] input_file
-
-Build a project structure from a Markdown (.md) or YAML (.yml/.yaml) file.
-
-positional arguments:
-  input_file            Path to the structure file.
-
-options:
-  -h, --help            show this help message and exit
-  -o OUTPUT, --output OUTPUT
-                        Target directory where the structure will be created (default: current directory).
-  --dry-run             Print the actions that would be taken without creating any files or directories.
-  -f, --force           Overwrite existing files if they are encountered.
+nirman [-h] [-o OUTPUT] [--dry-run] [-f] input_file
 ```
+
+### **Arguments**
+
+| Argument     | Description                                                  |
+| ------------ | ------------------------------------------------------------ |
+| `input_file` | Markdown (.md/.markdown) or YAML (.yml/.yaml) structure file |
+
+### **Options**
+
+| Option         | Description                                   |
+| -------------- | --------------------------------------------- |
+| `-o, --output` | Target directory (default: current directory) |
+| `--dry-run`    | Show actions without creating anything        |
+| `-f, --force`  | Overwrite existing files                      |
 
 ---
 
-# YAML Rules (Important)
+## **📘 YAML Rules (Important)**
 
-Your YAML structure must follow these rules:
+You must follow these rules when writing YAML structures:
 
-1. **Every folder is a dictionary key.**
-2. **All direct files inside a folder must be placed under:**
+1. **Every folder is a dict key**
+
+2. **Files go under the `files:` key**
 
    ```yaml
    files:
-     - file1.txt
-     - file2.py
+     - file1.py
+     - file2.txt
+     - config.json
    ```
-3. Nested folders must be dictionaries.
-4. Lists may contain:
 
-   * file names (strings)
-   * dictionaries for nested folders
+3. Nested folders must be dictionaries
 
-This rule is reflected in the updated parser:
+4. Lists can contain:
 
-```python
-# Individual files must be under "files:"
-if key == "files":
-    ...
+   * filenames (strings)
+   * folders (dictionary items)
+
+This enforces a clean, consistent YAML tree.
+
+---
+
+## **🧪 Running Tests (For Contributors)**
+
+```bash
+pytest
+```
+
+Includes:
+
+* Parser tests
+* CLI integration tests
+* YAML rule enforcement tests
+
+---
+
+## **🔧 Local Development Setup**
+
+```bash
+git clone https://github.com/Hemanth0411/Nirman-cli
+cd Nirman-cli
+pip install -e .
+```
+
+Run CLI from source:
+
+```bash
+nirman example.yml
 ```
 
 ---
 
-## License
+## **📄 License**
 
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/Hemanth0411/Nirman-cli/blob/main/LICENSE) file for details.
